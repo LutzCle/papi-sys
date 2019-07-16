@@ -26,6 +26,17 @@ counters. Visit the [PAPI website](http://icl.utk.edu/papi) for more information
 
 Note that this crate does not provide a high-level interface to PAPI.
 
+## Environment Variables
+
+There are two environment variables to specify custom PAPI library dependency:
+- `PAPI_PREFIX`: requires to generate `bindings.rs`
+- `LD_LIBRARY_PATH`: requires to link dynamic library `libpapi.so`
+
+Let's assume you installed PAPI in `/opt/papi/5.7.0/`, then you can test by
+```bash
+$ PAPI_PREFIX=/opt/papi/5.7.0/ LD_LIBRARY_PATH=/opt/papi/5.7.0/lib:$LD_LIBRARY_PATH cargo test
+```
+
 ## Platforms
 
 The following platforms are currently tested:

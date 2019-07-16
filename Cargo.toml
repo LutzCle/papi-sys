@@ -1,11 +1,13 @@
 [package]
 name = "papi-sys"
 version = "0.1.0"
-authors = ["Clemens Lutz <lutzcle@cml.li>"]
+authors = ["Yeonsoo Kim <alkorang@outlook.com>", "Clemens Lutz <lutzcle@cml.li>"]
 license = "Apache-2.0"
 build = "build.rs"
+links = "papi_wrapper"
 
 [dependencies]
 
 [build-dependencies]
-bindgen = "*"
+bindgen = "0.50"
+cc = "1.0"

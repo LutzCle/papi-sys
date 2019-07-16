@@ -28,30 +28,24 @@ mod tests {
 
     #[test]
     fn do_papi_init() {
-        let ver = unsafe {
-            PAPI_library_init(_papi_ver_current)
-        };
-        assert_eq!(ver, _papi_ver_current);
+        unsafe {
+            let ver = PAPI_library_init(_papi_ver_current);
+            assert_eq!(ver, _papi_ver_current);
+        }
 
-        let is_inited = unsafe {
-            PAPI_is_initialized()
-        };
+        let is_inited = unsafe { PAPI_is_initialized() };
         assert_ne!(is_inited, PAPI_NOT_INITED as i32);
     }
 
     #[test]
     fn get_real_cyc() {
-        let cycles = unsafe {
-            PAPI_get_real_cyc()
-        };
+        let cycles = unsafe { PAPI_get_real_cyc() };
         assert!(cycles >= 0);
     }
 
     #[test]
     fn get_num_counters() {
-        let num_hwcntrs = unsafe {
-            PAPI_num_counters()
-        };
+        let num_hwcntrs = unsafe { PAPI_num_counters() };
         assert!(num_hwcntrs >= 0);
     }
 }

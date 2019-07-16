@@ -21,27 +21,52 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    println!("cargo:rustc-link-lib=papi");
-
-    let bindings = bindgen::builder()
-        .header("wrapper.h")
-        .whitelist_recursively(false)
-        .whitelist_type("^PAPI_[[:alpha:]_]+")
-        .whitelist_type("^_papi_[[:alpha:]_]+")
-        .whitelist_function("^PAPI_[[:alpha:]_]+")
-        .whitelist_function("^_papi_[[:alpha:]_]+")
-        .whitelist_var("^PAPI_[[:alpha:]_]+")
-        .whitelist_var("^_papi_[[:alpha:]_]+")
-        .whitelist_type("caddr_t")
-        .whitelist_type("__caddr_t")
-        .whitelist_type("_dmem_t")
-        .whitelist_type("event_info")
-        .generate()
-        .expect("Unable to generate PAPI bindings");
-
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-    bindings
-        .write_to_file(out_path.join("bindings.rs"))
-        .expect("Unable to write PAPI bindings");
 
+    println!("cargo:rustc-link-lib=papi");
+    if let Ok(s) = env::var("PAPI_PREFIX") {
+        let path = PathBuf::from(s);
+        println!("cargo:rustc-link-search={}", path.join("lib").display());
+        println!("cargo:rust-flags=-L{} -lpapi", path.join("lib").display());
+
+        bindgen::builder()
+            .rustfmt_bindings(false)
+            .header("wrapper.h")
+            .clang_arg(format!("-I{}", path.join("include").display()))
+            .clang_arg(format!("-L{}", path.join("lib").display()))
+            .whitelist_recursively(false)
+            .whitelist_type("^PAPI_[[:alpha:]_]+")
+            .whitelist_type("^_papi_[[:alpha:]_]+")
+            .whitelist_function("^PAPI_[[:alpha:]_]+")
+            .whitelist_function("^_papi_[[:alpha:]_]+")
+            .whitelist_var("^PAPI_[[:alpha:]_]+")
+            .whitelist_var("^_papi_[[:alpha:]_]+")
+            .whitelist_type("caddr_t")
+            .whitelist_type("__caddr_t")
+            .whitelist_type("_dmem_t")
+            .whitelist_type("event_info")
+            .generate()
+            .expect("Unable to generate PAPI bindings")
+            .write_to_file(out_path.join("bindings.rs"))
+            .expect("Unable to write PAPI bindings");
+    } else {
+        bindgen::builder()
+            .rustfmt_bindings(false)
+            .header("wrapper.h")
+            .whitelist_recursively(false)
+            .whitelist_type("^PAPI_[[:alpha:]_]+")
+            .whitelist_type("^_papi_[[:alpha:]_]+")
+            .whitelist_function("^PAPI_[[:alpha:]_]+")
+            .whitelist_function("^_papi_[[:alpha:]_]+")
+            .whitelist_var("^PAPI_[[:alpha:]_]+")
+            .whitelist_var("^_papi_[[:alpha:]_]+")
+            .whitelist_type("caddr_t")
+            .whitelist_type("__caddr_t")
+            .whitelist_type("_dmem_t")
+            .whitelist_type("event_info")
+            .generate()
+            .expect("Unable to generate PAPI bindings")
+            .write_to_file(out_path.join("bindings.rs"))
+            .expect("Unable to write PAPI bindings");
+    }
 }
