@@ -24,7 +24,7 @@ fn main() {
     // PAPI_LIBRARY
     match env::var("PAPI_LIBRARY") {
         Ok(val) => println!("cargo:rustc-link-search=native={}", val),
-        Err(_) => {},
+        Err(_) => {}
     }
     println!("cargo:rustc-link-lib=static=papi");
 
@@ -54,5 +54,4 @@ fn main() {
     bindings
         .write_to_file(out_path.join("bindings.rs"))
         .expect("Unable to write PAPI bindings");
-
 }
