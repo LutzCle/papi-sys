@@ -21,21 +21,30 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    // PAPI_LIBRARY
-    match env::var("PAPI_LIBRARY") {
-        Ok(val) => println!("cargo:rustc-link-search=native={}", val),
-        Err(_) => {}
-    }
-    println!("cargo:rustc-link-lib=static=papi");
+    let link_option = match env::var("PAPI_LIBRARY") {
+        Ok(val) => {
+            println!("cargo:rustc-link-lib=static=papi");
+            println!("cargo:rustc-link-search=native={}", val);
 
-    // PAPI_INCLUDE_DIR
+            format!("-L{}", val)
+        }
+        Err(_) => "-Lpapi".to_string(),
+    };
+
+    let include_option = match env::var("PAPI_INCLUDE_DIR") {
+        Ok(val) => format!("-I{}", val),
+        Err(_) => "-Ipapi".to_string(),
+    };
+
     let bindings = match env::var("PAPI_INCLUDE_DIR") {
         Ok(val) => bindgen::builder().clang_arg(format!("-I{}", val)),
         Err(_) => bindgen::builder(),
     };
 
     let bindings = bindings
-        .header("wrapper.h")
+        .header("papi_wrapper.c")
+        .clang_arg(&link_option)
+        .clang_arg(&include_option)
         .whitelist_recursively(false)
         .whitelist_type("^PAPI_[[:alpha:]_]+")
         .whitelist_type("^_papi_[[:alpha:]_]+")
@@ -54,4 +63,11 @@ fn main() {
     bindings
         .write_to_file(out_path.join("bindings.rs"))
         .expect("Unable to write PAPI bindings");
+
+    cc::Build::new()
+        .file("papi_wrapper.c")
+        .static_flag(true)
+        .flag(&link_option)
+        .flag(&include_option)
+        .compile("libpapi_sys.a");
 }

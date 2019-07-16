@@ -28,8 +28,10 @@ mod tests {
 
     #[test]
     fn do_papi_init() {
-        let ver = unsafe { PAPI_library_init(_papi_ver_current) };
-        assert_eq!(ver, _papi_ver_current);
+        unsafe {
+            let ver = PAPI_library_init(_papi_ver_current);
+            assert_eq!(ver, _papi_ver_current);
+        }
 
         let is_inited = unsafe { PAPI_is_initialized() };
         assert_ne!(is_inited, PAPI_NOT_INITED as i32);

@@ -4,9 +4,10 @@ version = "0.2.0"
 authors = ["Yeonsoo Kim <alkorang@outlook.com>", "Clemens Lutz <lutzcle@cml.li>"]
 license = "Apache-2.0"
 build = "build.rs"
-links = "papi"
+links = "papi_sys"
 
 [dependencies]
 
 [build-dependencies]
 bindgen = "*"
+cc = "1.0"
