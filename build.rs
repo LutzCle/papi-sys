@@ -28,7 +28,7 @@ fn main() {
 
             format!("-L{}", val)
         }
-        Err(_) => "-Lpapi".to_string(),
+        Err(_) => "-lpapi".to_string(),
     };
 
     let include_option = match env::var("PAPI_INCLUDE_DIR") {
