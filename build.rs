@@ -21,9 +21,20 @@ use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    println!("cargo:rustc-link-lib=papi");
+    // PAPI_LIBRARY
+    match env::var("PAPI_LIBRARY") {
+        Ok(val) => println!("cargo:rustc-link-search=native={}", val),
+        Err(_) => {},
+    }
+    println!("cargo:rustc-link-lib=static=papi");
 
-    let bindings = bindgen::builder()
+    // PAPI_INCLUDE_DIR
+    let bindings = match env::var("PAPI_INCLUDE_DIR") {
+        Ok(val) => bindgen::builder().clang_arg(format!("-I{}", val)),
+        Err(_) => bindgen::builder(),
+    };
+
+    let bindings = bindings
         .header("wrapper.h")
         .whitelist_recursively(false)
         .whitelist_type("^PAPI_[[:alpha:]_]+")

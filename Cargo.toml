@@ -1,9 +1,10 @@
 [package]
 name = "papi-sys"
-version = "0.1.0"
-authors = ["Clemens Lutz <lutzcle@cml.li>"]
+version = "0.2.0"
+authors = ["Yeonsoo Kim <alkorang@outlook.com>", "Clemens Lutz <lutzcle@cml.li>"]
 license = "Apache-2.0"
 build = "build.rs"
+links = "papi"
 
 [dependencies]
 
