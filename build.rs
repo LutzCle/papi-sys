@@ -16,6 +16,7 @@
  */
 
 extern crate bindgen;
+extern crate cc;
 
 use std::env;
 use std::path::PathBuf;
@@ -28,20 +29,23 @@ fn main() {
 
             format!("-L{}", val)
         }
-        Err(_) => "-lpapi".to_string(),
+        Err(_) => {
+            unimplemented!("You must specify PAPI_LIBRARY env.");
+
+            //"-lpapi".to_string()
+        }
     };
 
     let include_option = match env::var("PAPI_INCLUDE_DIR") {
         Ok(val) => format!("-I{}", val),
-        Err(_) => "-Ipapi".to_string(),
+        Err(_) => {
+            unimplemented!("You must sepcify PAPI_INCLUDE_DIR env.");
+
+            //"-Ipapi".to_string()
+        }
     };
 
-    let bindings = match env::var("PAPI_INCLUDE_DIR") {
-        Ok(val) => bindgen::builder().clang_arg(format!("-I{}", val)),
-        Err(_) => bindgen::builder(),
-    };
-
-    let bindings = bindings
+    let bindings = bindgen::builder()
         .header("papi_wrapper.c")
         .clang_arg(&link_option)
         .clang_arg(&include_option)
@@ -69,5 +73,6 @@ fn main() {
         .static_flag(true)
         .flag(&link_option)
         .flag(&include_option)
+        .flag("--whole-file")
         .compile("libpapi_sys.a");
 }
