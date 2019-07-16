@@ -24,6 +24,8 @@ The purpose of this crate is to provide 1:1 bindings for papi.h.
 PAPI is a library that provides a consistent interface to hardware performance
 counters. Visit the [PAPI website](http://icl.utk.edu/papi) for more information.
 
+Note that this crate does not provide a high-level interface to PAPI.
+
 ## Environment Variables
 
 There are two environment variables to specify custom PAPI library dependency:
@@ -34,8 +36,6 @@ Let's assume you installed PAPI in `/opt/papi/5.7.0/`, then you will run,
 ```bash
 $ PAPI_LIBRARY=/opt/papi/5.7.0/lib/ PAPI_INCLUDE_DIR=/opt/papi/5.7.0/include/ cargo build
 ```
-
-Note that this crate does not provide a high-level interface to PAPI.
 
 ## Platforms
 
