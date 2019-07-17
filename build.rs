@@ -16,63 +16,56 @@
  */
 
 extern crate bindgen;
-extern crate cc;
 
 use std::env;
 use std::path::PathBuf;
 
 fn main() {
-    let link_option = match env::var("PAPI_LIBRARY") {
-        Ok(val) => {
-            println!("cargo:rustc-link-lib=static=papi");
-            println!("cargo:rustc-link-search=native={}", val);
-
-            format!("-L{}", val)
-        }
-        Err(_) => {
-            unimplemented!("You must specify PAPI_LIBRARY env.");
-
-            //"-lpapi".to_string()
-        }
-    };
-
-    let include_option = match env::var("PAPI_INCLUDE_DIR") {
-        Ok(val) => format!("-I{}", val),
-        Err(_) => {
-            unimplemented!("You must sepcify PAPI_INCLUDE_DIR env.");
-
-            //"-Ipapi".to_string()
-        }
-    };
-
-    let bindings = bindgen::builder()
-        .header("papi_wrapper.c")
-        .clang_arg(&link_option)
-        .clang_arg(&include_option)
-        .whitelist_recursively(false)
-        .whitelist_type("^PAPI_[[:alpha:]_]+")
-        .whitelist_type("^_papi_[[:alpha:]_]+")
-        .whitelist_function("^PAPI_[[:alpha:]_]+")
-        .whitelist_function("^_papi_[[:alpha:]_]+")
-        .whitelist_var("^PAPI_[[:alpha:]_]+")
-        .whitelist_var("^_papi_[[:alpha:]_]+")
-        .whitelist_type("caddr_t")
-        .whitelist_type("__caddr_t")
-        .whitelist_type("_dmem_t")
-        .whitelist_type("event_info")
-        .generate()
-        .expect("Unable to generate PAPI bindings");
-
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-    bindings
-        .write_to_file(out_path.join("bindings.rs"))
-        .expect("Unable to write PAPI bindings");
 
-    cc::Build::new()
-        .file("papi_wrapper.c")
-        .static_flag(true)
-        .flag(&link_option)
-        .flag(&include_option)
-        .flag("--whole-file")
-        .compile("libpapi_sys.a");
+    println!("cargo:rustc-link-lib=papi");
+    if let Ok(s) = env::var("PAPI_PREFIX") {
+        let path = PathBuf::from(s);
+        println!("cargo:rustc-link-search={}", path.join("lib").display());
+        println!("cargo:rust-flags=-L{} -lpapi", path.join("lib").display());
+
+        bindgen::builder()
+            .header("wrapper.h")
+            .clang_arg(format!("-I{}", path.join("include").display()))
+            .clang_arg(format!("-L{}", path.join("lib").display()))
+            .whitelist_recursively(false)
+            .whitelist_type("^PAPI_[[:alpha:]_]+")
+            .whitelist_type("^_papi_[[:alpha:]_]+")
+            .whitelist_function("^PAPI_[[:alpha:]_]+")
+            .whitelist_function("^_papi_[[:alpha:]_]+")
+            .whitelist_var("^PAPI_[[:alpha:]_]+")
+            .whitelist_var("^_papi_[[:alpha:]_]+")
+            .whitelist_type("caddr_t")
+            .whitelist_type("__caddr_t")
+            .whitelist_type("_dmem_t")
+            .whitelist_type("event_info")
+            .generate()
+            .expect("Unable to generate PAPI bindings")
+            .write_to_file(out_path.join("bindings.rs"))
+            .expect("Unable to write PAPI bindings");
+    } else {
+        bindgen::builder()
+            .header("wrapper.h")
+            .whitelist_recursively(false)
+            .whitelist_type("^PAPI_[[:alpha:]_]+")
+            .whitelist_type("^_papi_[[:alpha:]_]+")
+            .whitelist_function("^PAPI_[[:alpha:]_]+")
+            .whitelist_function("^_papi_[[:alpha:]_]+")
+            .whitelist_var("^PAPI_[[:alpha:]_]+")
+            .whitelist_var("^_papi_[[:alpha:]_]+")
+            .whitelist_type("caddr_t")
+            .whitelist_type("__caddr_t")
+            .whitelist_type("_dmem_t")
+            .whitelist_type("event_info")
+            .generate()
+            .expect("Unable to generate PAPI bindings")
+            .write_to_file(out_path.join("bindings.rs"))
+            .expect("Unable to write PAPI bindings");
+    }
+
 }

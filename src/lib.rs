@@ -47,7 +47,7 @@ mod tests {
     }
 
     #[test]
-    fn do_test() {
+    fn do_simple_test() {
         do_papi_init();
         get_real_cyc();
         get_num_counters();
