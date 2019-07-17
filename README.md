@@ -29,12 +29,12 @@ Note that this crate does not provide a high-level interface to PAPI.
 ## Environment Variables
 
 There are two environment variables to specify custom PAPI library dependency:
-- `PAPI_LIBRARY`: used for `-L` option
-- `PAPI_INCLUDE_DIR`: used for `-I` option
+- `PAPI_PREFIX`: requires to generate `bindings.rs`
+- `LD_LIBRARY_PATH`: requires to link dynamic library `libpapi.so`
 
-Let's assume you installed PAPI in `/opt/papi/5.7.0/`, then you will run,
+Let's assume you installed PAPI in `/opt/papi/5.7.0/`, then you can test by
 ```bash
-$ PAPI_LIBRARY=/opt/papi/5.7.0/lib/ PAPI_INCLUDE_DIR=/opt/papi/5.7.0/include/ cargo build
+$ PAPI_PREFIX=/opt/papi/5.7.0/ LD_LIBRARY_PATH=/opt/papi/5.7.0/lib:$LD_LIBRARY_PATH cargo test
 ```
 
 ## Platforms
