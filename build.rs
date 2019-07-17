@@ -30,6 +30,7 @@ fn main() {
         println!("cargo:rust-flags=-L{} -lpapi", path.join("lib").display());
 
         bindgen::builder()
+            .rustfmt_bindings(false)
             .header("wrapper.h")
             .clang_arg(format!("-I{}", path.join("include").display()))
             .clang_arg(format!("-L{}", path.join("lib").display()))
@@ -50,6 +51,7 @@ fn main() {
             .expect("Unable to write PAPI bindings");
     } else {
         bindgen::builder()
+            .rustfmt_bindings(false)
             .header("wrapper.h")
             .whitelist_recursively(false)
             .whitelist_type("^PAPI_[[:alpha:]_]+")
@@ -67,5 +69,4 @@ fn main() {
             .write_to_file(out_path.join("bindings.rs"))
             .expect("Unable to write PAPI bindings");
     }
-
 }
