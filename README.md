@@ -7,7 +7,7 @@ First, add the following to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-papi-sys = "0.2.0"
+papi-sys = "0.3.0"
 ```
 
 Next, add this to your crate root:
@@ -41,6 +41,5 @@ $ PAPI_PREFIX=/opt/papi/5.7.0/ LD_LIBRARY_PATH=/opt/papi/5.7.0/lib:$LD_LIBRARY_P
 
 The following platforms are currently tested:
 
-* `x86_64-unknown-linux-gnu`
-* `powerpc64le-unknown-linux-gnu`
+* `x86_64-unknown-linux-gnu`, `rustc >= 1.36`, `gcc >= 4.8`, `clang >= 3.8`
 
