@@ -37,3 +37,10 @@ The following platforms are currently tested:
 
 * `x86_64-unknown-linux-gnu`
 * `powerpc64le-unknown-linux-gnu`
+
+## Dependencies
+
+The following dependency versions are currently required:
+
+* `rustc` >= 1.36
+* `gcc` >= 4.8 or `clang` >= 3.8
