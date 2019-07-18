@@ -15,58 +15,54 @@
  * limitations under the License.
  */
 
-use bindgen;
-
 use std::env;
+use std::fs::File;
+use std::io::prelude::*;
 use std::path::PathBuf;
+use std::process::Command;
 
-fn main() {
+fn main() -> std::io::Result<()> {
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-
+    let papi_prefix_path = PathBuf::from(env::var("PAPI_PREFIX").unwrap());
     println!("cargo:rustc-link-lib=papi");
-    if let Ok(s) = env::var("PAPI_PREFIX") {
-        let path = PathBuf::from(s);
-        println!("cargo:rustc-link-search={}", path.join("lib").display());
-        println!("cargo:rust-flags=-L{} -lpapi", path.join("lib").display());
+    println!(
+        "cargo:rustc-link-search={}",
+        papi_prefix_path.join("lib").display()
+    );
+    println!(
+        "cargo:rust-flags=-L{} -lpapi",
+        papi_prefix_path.join("lib").display()
+    );
 
-        bindgen::builder()
-            .rustfmt_bindings(false)
-            .header("wrapper.h")
-            .clang_arg(format!("-I{}", path.join("include").display()))
-            .clang_arg(format!("-L{}", path.join("lib").display()))
-            .whitelist_recursively(false)
-            .whitelist_type("^PAPI_[[:alpha:]_]+")
-            .whitelist_type("^_papi_[[:alpha:]_]+")
-            .whitelist_function("^PAPI_[[:alpha:]_]+")
-            .whitelist_function("^_papi_[[:alpha:]_]+")
-            .whitelist_var("^PAPI_[[:alpha:]_]+")
-            .whitelist_var("^_papi_[[:alpha:]_]+")
-            .whitelist_type("caddr_t")
-            .whitelist_type("__caddr_t")
-            .whitelist_type("_dmem_t")
-            .whitelist_type("event_info")
-            .generate()
-            .expect("Unable to generate PAPI bindings")
-            .write_to_file(out_path.join("bindings.rs"))
-            .expect("Unable to write PAPI bindings");
-    } else {
-        bindgen::builder()
-            .rustfmt_bindings(false)
-            .header("wrapper.h")
-            .whitelist_recursively(false)
-            .whitelist_type("^PAPI_[[:alpha:]_]+")
-            .whitelist_type("^_papi_[[:alpha:]_]+")
-            .whitelist_function("^PAPI_[[:alpha:]_]+")
-            .whitelist_function("^_papi_[[:alpha:]_]+")
-            .whitelist_var("^PAPI_[[:alpha:]_]+")
-            .whitelist_var("^_papi_[[:alpha:]_]+")
-            .whitelist_type("caddr_t")
-            .whitelist_type("__caddr_t")
-            .whitelist_type("_dmem_t")
-            .whitelist_type("event_info")
-            .generate()
-            .expect("Unable to generate PAPI bindings")
-            .write_to_file(out_path.join("bindings.rs"))
-            .expect("Unable to write PAPI bindings");
-    }
+    bindgen::builder()
+        .rustfmt_bindings(false)
+        .header("wrapper.h")
+        .clang_arg(format!("-I{}", papi_prefix_path.join("include").display()))
+        .clang_arg(format!("-L{}", papi_prefix_path.join("lib").display()))
+        .whitelist_recursively(false)
+        .whitelist_type("^PAPI_[[:alpha:]_]+")
+        .whitelist_type("^_papi_[[:alpha:]_]+")
+        .whitelist_function("^PAPI_[[:alpha:]_]+")
+        .whitelist_function("^_papi_[[:alpha:]_]+")
+        .whitelist_var("^PAPI_[[:alpha:]_]+")
+        .whitelist_var("^_papi_[[:alpha:]_]+")
+        .whitelist_type("caddr_t")
+        .whitelist_type("__caddr_t")
+        .whitelist_type("_dmem_t")
+        .whitelist_type("event_info")
+        .generate()
+        .expect("Unable to generate PAPI bindings")
+        .write_to_file(out_path.join("bindings.rs"))
+        .expect("Unable to write PAPI bindings");
+
+    let codegen_stdout = Command::new("sh")
+        .arg("codegen.sh")
+        .output()
+        .unwrap()
+        .stdout;
+    let mut file = File::create(out_path.join("codegen.rs"))?;
+    file.write_all(&codegen_stdout)?;
+    file.sync_all()?;
+
+    Ok(())
 }

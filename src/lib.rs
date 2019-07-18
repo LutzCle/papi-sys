@@ -20,6 +20,7 @@
 #![allow(non_snake_case)]
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+include!(concat!(env!("OUT_DIR"), "/codegen.rs"));
 
 #[cfg(test)]
 mod tests {
@@ -36,8 +37,8 @@ mod tests {
 
     fn do_papi_init() {
         unsafe {
-            let ver = PAPI_library_init(_papi_ver_current);
-            assert_eq!(ver, _papi_ver_current);
+            let ver = PAPI_library_init(PAPI_VER_CURRENT);
+            assert_eq!(ver, PAPI_VER_CURRENT);
         }
 
         let is_inited = unsafe { PAPI_is_initialized() };
