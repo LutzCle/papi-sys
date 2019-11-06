@@ -25,19 +25,25 @@ use std::process::Command;
 
 fn main() -> std::io::Result<()> {
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-    let papi_prefix_path = PathBuf::from(env::var("PAPI_PREFIX").unwrap());
+    let papi_prefix_path = env::var("PAPI_PREFIX").map(|p| PathBuf::from(p)).ok();
 
-    println!(
-        "cargo:rustc-link-search={}",
-        papi_prefix_path.join("lib").display()
-    );
+    let clang_args = if let Some(p) = papi_prefix_path {
+        println!("cargo:rustc-link-search={}", p.join("lib").display());
+
+        vec![
+            format!("-I{}", p.join("include").display()),
+            format!("-L{}", p.join("lib").display()),
+        ]
+    } else {
+        Vec::new()
+    };
+
     println!("cargo:rustc-link-lib=papi");
 
     bindgen::builder()
         .rustfmt_bindings(false)
         .header("wrapper.h")
-        .clang_arg(format!("-I{}", papi_prefix_path.join("include").display()))
-        .clang_arg(format!("-L{}", papi_prefix_path.join("lib").display()))
+        .clang_args(clang_args.iter())
         .whitelist_recursively(false)
         .whitelist_type("^PAPI_[[:alpha:]_]+")
         .whitelist_type("^_papi_[[:alpha:]_]+")
