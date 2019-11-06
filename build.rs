@@ -26,15 +26,12 @@ use std::process::Command;
 fn main() -> std::io::Result<()> {
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     let papi_prefix_path = PathBuf::from(env::var("PAPI_PREFIX").unwrap());
-    println!("cargo:rustc-link-lib=papi");
+
     println!(
         "cargo:rustc-link-search={}",
         papi_prefix_path.join("lib").display()
     );
-    println!(
-        "cargo:rust-flags=-L{} -lpapi",
-        papi_prefix_path.join("lib").display()
-    );
+    println!("cargo:rustc-link-lib=papi");
 
     bindgen::builder()
         .rustfmt_bindings(false)
