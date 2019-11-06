@@ -22,13 +22,20 @@ Note that this crate does not provide a high-level interface to PAPI.
 
 ## Environment Variables
 
-There are two environment variables to specify custom PAPI library dependency:
-- `PAPI_PREFIX`: requires to generate `bindings.rs`
-- `LD_LIBRARY_PATH`: requires to link dynamic library `libpapi.so`
+There are two environment variables to specify a custom PAPI library path:
+- `PAPI_PREFIX`: required to generate `bindings.rs`
+- `LD_LIBRARY_PATH`: required to dynamically link `libpapi.so`
 
 Let's assume you installed PAPI in `/opt/papi/5.7.0/`, then you can test by
 ```bash
 $ PAPI_PREFIX=/opt/papi/5.7.0/ LD_LIBRARY_PATH=/opt/papi/5.7.0/lib:$LD_LIBRARY_PATH cargo test
+```
+
+To avoid setting `LD_LIBRARY_PATH`, you can configure the search path
+globally by running:
+```bash
+$ sudo echo "/opt/papi/5.7.0/" > /etc/ld.so.conf.d/papi.conf
+$ sudo ldconfig
 ```
 
 ## Platforms
