@@ -29,6 +29,7 @@ fn main() -> std::io::Result<()> {
 
     let clang_args = if let Some(p) = papi_prefix_path {
         println!("cargo:rustc-link-search={}", p.join("lib").display());
+        println!("cargo:rust-flags=-L{}", p.join("lib").display());
 
         vec![
             format!("-I{}", p.join("include").display()),
