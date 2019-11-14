@@ -6,6 +6,8 @@ license = "Apache-2.0"
 build = "build.rs"
 links = "papi_wrapper"
 
+edition = "2018"
+
 [dependencies]
 
 [build-dependencies]

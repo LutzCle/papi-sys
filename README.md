@@ -10,12 +10,6 @@ First, add the following to your `Cargo.toml`:
 papi-sys = "0.1.0"
 ```
 
-Next, add this to your crate root:
-
-```rust
-extern crate papi-sys;
-```
-
 Before building, ensure that PAPI is installed on your system.
 
 ## What is papi-sys?

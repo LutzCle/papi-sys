@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-extern crate bindgen;
+use bindgen;
 
 use std::env;
 use std::path::PathBuf;
