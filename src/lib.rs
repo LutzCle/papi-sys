@@ -23,10 +23,17 @@ include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 #[cfg(test)]
 mod tests {
+    use lazy_static::lazy_static;
+
+    lazy_static! {
+        static ref IS_PAPI_INITED: bool = {
+            do_papi_init();
+            true
+        };
+    }
 
     use super::*;
 
-    #[test]
     fn do_papi_init() {
         unsafe {
             let ver = PAPI_library_init(_papi_ver_current);
