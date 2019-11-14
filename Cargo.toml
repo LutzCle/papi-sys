@@ -2,9 +2,20 @@
 name = "papi-sys"
 version = "0.3.0"
 authors = ["Clemens Lutz <lutzcle@cml.li>", "Yeonsoo Kim <alkorang@outlook.com>"]
+
+description = "PAPI (Performance API) bindings for Rust"
+repository = "https://github.com/LutzCle/papi-sys"
+readme = "README.md"
 license = "MIT OR Apache-2.0"
+keywords = ["hardware-counters", "performance-counters"]
+categories = ["hardware-support", "profiling", "api-bindings"]
+
 build = "build.rs"
 links = "papi_wrapper"
+
+[badges]
+travis-ci = { repository = "LutzCle/papi-rs" }
+maintenance = { status = "actively-developed" }
 
 [dependencies]
 
