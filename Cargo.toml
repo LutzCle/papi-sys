@@ -8,7 +8,7 @@ repository = "https://github.com/LutzCle/papi-sys"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
 keywords = ["hardware-counters", "performance-counters"]
-categories = ["hardware-support", "profiling", "api-bindings"]
+categories = ["hardware-support", "development-tools::profiling", "api-bindings"]
 
 edition = "2018"
 
