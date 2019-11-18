@@ -1,4 +1,12 @@
-dist: bionic
+os: linux
+dist:
+    - bionic # PAPI 5.6.0
+    - eoan   # PAPI 5.7.0
+arch:
+    - amd64
+    - ppc64le
+    - arm64
+
 language: rust
 rust:
     - stable
