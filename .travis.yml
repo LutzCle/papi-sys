@@ -5,12 +5,12 @@ arch:
     - amd64
     - ppc64le
     - arm64
-jobs:
-    include:
-        # Travis only supports eoan on amd64
-        # eoan includes PAPI 5.7.0
-        - dist: eoan
-          arch: amd64
+# jobs:
+#     include:
+#         # Travis only supports eoan on amd64
+#         # eoan includes PAPI 5.7.0
+#         - dist: eoan
+#           arch: amd64
 
 language: rust
 rust:
